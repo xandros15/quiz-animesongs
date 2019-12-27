@@ -1,5 +1,5 @@
 import { answer, getSongs, getSongsFromLocal } from '../../api/songs'
-import { getTitles } from '../../api/titles'
+import { loadHinter, search } from '../../tools/hinter'
 import GameStatus from './GameStatus'
 
 export default {
@@ -7,13 +7,11 @@ export default {
     status: GameStatus.SETUP,
     songs: [],
     index: -1,
-    volumeVal: 50,
-    volumeCache: 0,
+    volume: 0.5,
     settings: {},
     reply: false,
     answerCorrect: false,
     hints: [],
-    engine: null,
     guess: '',
     score: 0,
     maxScore: 0,
@@ -32,18 +30,37 @@ export default {
     currentSong (state) {
       return state.songs[state.index] || false
     },
-    volume (state) {
-      return state.volumeVal / 100
+    settings (state) {
+      return state.settings
+    },
+    score (state) {
+      return state.score
+    },
+    maxScore (state) {
+      return state.songs.length
+    },
+    songNumber (state) {
+      return state.index + 1
+    },
+    songsMax (state) {
+      return state.songs.length
+    },
+    isCorrect (state) {
+      return state.answerCorrect === true
+    },
+    status (state) {
+      return state.status
+    },
+    hints (state) {
+      return state.hints
     }
   },
   mutations: {
     ['mute'] (state) {
-      state.volumeCache = state.volumeVal
-      state.volumeVal = 0
+      state.volume = 0
     },
-    ['unmute'] (state) {
-      state.volumeVal = state.volumeCache
-      state.volumeCache = 0
+    ['changeVolume'] (state, volume) {
+      state.volume = volume
     },
     ['correct'] (state) {
       state.score++
@@ -78,8 +95,11 @@ export default {
     ['pass'] (state) {
       state.status = GameStatus.PASS
     },
-    ['setHint'] (state, hint) {
-      state.hint = hint
+    ['setHints'] (state, hints) {
+      state.hints = hints
+    },
+    ['setGuess'] (state, guess) {
+      state.guess = guess
     },
     ['setSongs'] (state, songs) {
       state.songs = songs
@@ -90,8 +110,27 @@ export default {
     },
   },
   actions: {
-    ['mute'] ({commit, state}) {
-      return state.volumeCache > 0 ? commit('unmute') : commit('mute')
+    ['search'] ({commit, state}, guess) {
+      commit('setGuess', guess)
+      const callback = hints => {
+        let doubleWorldTitles = []
+        if (guess.length > 5 && guess.indexOf(' ') !== -1) {//when we have 2 same worlds like princess princess
+          const [word1, word2] = guess.split(' ')
+          if (word1 === word2) {
+            doubleWorldTitles = hints.filter(hint => hint.title.toLowerCase() === guess.toLowerCase()).slice(0, 5)
+          }
+        }
+        const newHints = doubleWorldTitles.concat(hints.sort((a, b) => a.title.length - b.title.length).slice(0, 5 - doubleWorldTitles.length))
+        commit('setHints', newHints)
+      }
+
+      search(state.guess, callback, callback)
+    },
+    ['changeVolume'] ({commit, state, getters}, value) {
+      commit('changeVolume', value / 100)
+      if (getters.currentSong) {
+        getters.currentSong.sound.volume = state.volume
+      }
     },
     ['correct'] ({commit, state, getters,}) {
       if (!state.settings.ownList) {
@@ -107,7 +146,7 @@ export default {
       getters.currentSong.sound.pause()
       commit('incorrect')
     },
-    ['answer'] ({dispatch, getters, state}, {name, id}) {
+    ['answer'] ({dispatch, getters}, {name, id}) {
       if (!getters.currentSong) {
         return
       }
@@ -122,7 +161,7 @@ export default {
         return dispatch('incorrect')
       }
       const animeIds = getters.currentSong.anime.map(anime => parseInt(anime.anidbId))
-      state.hint.search(name, hints => {
+      search(name, hints => {
         const guessIds = hints.map(({id}) => parseInt(id))
         for (const id of animeIds) {
           if (guessIds.indexOf(id) !== -1) {
@@ -137,8 +176,7 @@ export default {
       //load titles
       if (!state.engine || settings.language !== state.settings.language) {
         const acceptLang = ['en', settings.language]
-        const hint = await getTitles(acceptLang)
-        commit('setHint', hint)
+        await loadHinter(acceptLang)
       }
       //load songs
       let songs = []
@@ -169,7 +207,7 @@ export default {
         commit('next')
         let loaded = false
         getters.currentSong.sound.src = getters.currentSong.sample
-        getters.currentSong.sound.volume = getters.volume
+        getters.currentSong.sound.volume = state.volume
         const play = () => {
           loaded = true
           getters.currentSong.sound.play()
