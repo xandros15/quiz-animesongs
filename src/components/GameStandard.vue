@@ -104,9 +104,7 @@
     },
     watch: {
       volumeVal () {
-        if (this.currentSong) {
-          this.$store.dispatch('changeVolume', this.volumeVal)
-        }
+        this.$store.dispatch('changeVolume', this.volumeVal)
       },
       guess () {
         this.$store.dispatch('search', this.guess)
@@ -145,7 +143,7 @@
       ]),
       mute () {
         if (this.volumeCache > 0) {
-          this.$store.commit('changeVolume', this.volumeCache)
+          this.$store.dispatch('changeVolume', this.volumeCache)
           this.volumeVal = this.volumeCache
           this.volumeCache = 0
         } else {
