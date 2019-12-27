@@ -62,29 +62,7 @@
                 </div>
                 <div class="element" v-if="isStatus(['answered', 'pass',]) && currentSong">
                     <report-button :songId="currentSong.id"/>
-                    <h2 class="title is-3">
-                        <a :href="`https://animesongs.org/song/${currentSong.id}`" target="_blank">
-                            {{ currentSong.name }}
-                        </a>
-                    </h2>
-                    <h3 class="subtitle is-4">{{ currentSong.official }}</h3>
-                    <figure>
-                        <image-loader>
-                            <img :alt="currentSong.anime[0].name + ' label'"
-                                 :src="`https://img.animesongs.org/${currentSong.anime[0].anidbId}.jpg`"
-                                 slot="image">
-                        </image-loader>
-                    </figure>
-                    <div style="margin-bottom: 1rem">
-                        <h3 :key="anime.anidbId" class="title is-5" v-for="anime in currentSong.anime">
-                            <a :href="'https://anidb.net/a' + anime.anidbId" target="_blank">{{anime.name}}</a>
-                        </h3>
-                    </div>
-                    <div style="margin-bottom: 1rem">
-                        <div :key="key" v-for="(artist,key) in currentSong.artists">
-                            <b>{{ artist.credit }}</b>: {{artist.name}}
-                        </div>
-                    </div>
+                    <SongPreview :song="currentSong"/>
                 </div>
             </div>
         </div>
@@ -98,21 +76,21 @@
 <script>
   import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
   import STATUS from '../store/modules/GameStatus'
-  import ImageLoader from './ImageLoader'
   import KeyBindsButton from './KeyBindsButton'
   import KeyBindsHelp from './KeyBindsHelp'
   import Modal from './Modal'
   import Replay from './Replay'
   import ReportButton from './ReportButton'
   import Settings from './Settings'
+  import SongPreview from './SongPreview'
 
   export default {
     name: 'game',
     components: {
+      SongPreview,
       KeyBindsButton,
       Modal,
       ReportButton,
-      ImageLoader,
       KeyBindsHelp,
       Settings,
       Replay,
