@@ -1,6 +1,9 @@
 import { answer, getSongs, getSongsFromLocal } from '../../api/songs'
 import { loadHinter, search } from '../../tools/hinter'
+import { Player } from '../../tools/player'
 import GameStatus from './GameStatus'
+
+const player = new Player()
 
 export default {
   state: {
@@ -126,24 +129,22 @@ export default {
 
       search(state.guess, callback, callback)
     },
-    ['changeVolume'] ({commit, state, getters}, value) {
+    ['changeVolume'] ({commit, state,}, value) {
       commit('changeVolume', value / 100)
-      if (getters.currentSong) {
-        getters.currentSong.sound.volume = state.volume
-      }
+      player.changeVolume(state.volume)
     },
-    ['correct'] ({commit, state, getters,}) {
+    ['correct'] ({commit, state, dispatch, getters,}) {
       if (!state.settings.ownList) {
         answer(getters.currentSong.id, true)
       }
-      getters.currentSong.sound.pause()
+      dispatch('stop')
       commit('correct')
     },
-    ['incorrect'] ({commit, state, getters,}) {
+    ['incorrect'] ({commit, state, dispatch, getters,}) {
       if (!state.settings.ownList) {
         answer(getters.currentSong.id, false)
       }
-      getters.currentSong.sound.pause()
+      dispatch('stop')
       commit('incorrect')
     },
     ['answer'] ({dispatch, getters}, {name, id}) {
@@ -171,7 +172,7 @@ export default {
         return dispatch('incorrect')
       }, () => {})
     },
-    async ['load'] ({state, commit,}, settings) {
+    async ['load'] ({state, commit, getters,}, settings) {
       commit('start')
       //load titles
       if (!state.engine || settings.language !== state.settings.language) {
@@ -189,37 +190,25 @@ export default {
       commit('setSongs', songs)
       commit('setSettings', settings)
 
-      state.songs && state.songs.length > 0 ? commit('wait') : commit('finish')
-    },
-    ['replay'] ({getters}) {
-      if (getters.currentSong && getters.currentSong.sound.paused) {
-        return getters.currentSong.sound.play()
+      if (state.songs && state.songs.length > 0) {
+        commit('wait')
+        player.load(getters.nextSong.sample)
+      } else {
+        commit('finish')
       }
     },
-    ['stop'] ({getters}) {
-      if (getters.currentSong && !getters.currentSong.sound.paused) {
-        getters.currentSong.sound.pause()
-      }
+    ['replay'] () {
+      player.play()
+    },
+    ['stop'] () {
+      player.stop()
     },
     async ['next'] ({state, commit, dispatch, getters}) {
       if (state.songs.length > 0 && getters.nextSong) {
         await dispatch('stop')
         commit('next')
-        let loaded = false
-        getters.currentSong.sound.src = getters.currentSong.sample
-        getters.currentSong.sound.volume = state.volume
-        const play = () => {
-          loaded = true
-          getters.currentSong.sound.play()
-          getters.currentSong.sound.removeEventListener('canplaythrough', play)
-        }
-        getters.currentSong.sound.addEventListener('canplaythrough', play)
-        setTimeout(() => {
-          if (!loaded) {
-            dispatch('next')
-          }
-        }, 5000)
-        getters.currentSong.sound.load()
+        player.load(getters.nextSong.sample)
+        player.play()
       } else if (!getters.nextSong) {
         dispatch('stop')
         commit('finish')
