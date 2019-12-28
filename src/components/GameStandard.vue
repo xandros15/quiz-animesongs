@@ -13,7 +13,7 @@
                     <div class="volume-panel">
                         <label @click="mute" class="volume-label" for="volume">Volume:</label>
                         <input autocomplete="false" class="slider is-info" id="volume" max="100" min="0" step="1"
-                               type="range" v-model="volumeVal">
+                               type="range" v-model.number="volumeVal">
                     </div>
                 </div>
                 <div class="element" v-if="isStatus('end')">
@@ -104,6 +104,9 @@
     },
     watch: {
       volumeVal () {
+        if (this.volumeVal > 0) {
+          this.volumeCache = 0
+        }
         this.$store.dispatch('changeVolume', this.volumeVal)
       },
       guess () {
@@ -121,7 +124,6 @@
         'isLastSong',
         'nextSong',
         'currentSong',
-        'volume',
         'settings',
         'score',
         'maxScore',
