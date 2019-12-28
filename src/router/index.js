@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Game from '../components/Game'
 import GameStandard from '../components/GameStandard'
 import Generator from '../components/Generator'
 import Reports from '../components/Reports'
@@ -11,10 +10,6 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '',
-    component: Game
-  },
-  {
-    path: '/game',
     component: GameStandard
   },
   {
