@@ -62,7 +62,7 @@
                 </div>
             </div>
         </div>
-        <KeyBindsButton/>
+        <KeyBindsButton v-if="!isMobile"/>
         <Modal>
             <KeyBindsHelp v-if="modalType === 'KeyBind'"/>
         </Modal>
@@ -109,6 +109,9 @@
         modalType: state => state.modal,
         isModalOpen: state => state.modal.length > 0,
       }),
+      ...mapState([
+        'isMobile',
+      ]),
       ...mapGetters([
         'hints',
         'isFirstSong',
