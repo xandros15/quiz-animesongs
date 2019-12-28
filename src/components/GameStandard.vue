@@ -10,11 +10,7 @@
             <Settings :default="settings" @start="load" v-if="isStatus('setup')"/>
             <div v-else>
                 <div class="element">
-                    <div class="volume-panel">
-                        <label @click="mute" class="volume-label" for="volume">Volume:</label>
-                        <input autocomplete="false" class="slider is-info" id="volume" max="100" min="0" step="1"
-                               type="range" v-model.number="volumeVal">
-                    </div>
+                    <Volume @modify="changeVolume" @mute="mute" @unmute="changeVolume"/>
                 </div>
                 <div class="element" v-if="isStatus('end')">
                     <h3 class="title is-3">Score {{score}}/{{maxScore}}</h3>
@@ -83,10 +79,12 @@
   import ReportButton from './ReportButton'
   import Settings from './Settings'
   import SongPreview from './SongPreview'
+  import Volume from './Volume'
 
   export default {
     name: 'game',
     components: {
+      Volume,
       SongPreview,
       KeyBindsButton,
       Modal,
@@ -97,18 +95,11 @@
     },
     data () {
       return {
-        volumeCache: 0,
-        volumeVal: 50,
         guess: '',
       }
     },
     watch: {
-      volumeVal () {
-        if (this.volumeVal > 0) {
-          this.volumeCache = 0
-        }
-        this.$store.dispatch('changeVolume', this.volumeVal)
-      },
+
       guess () {
         this.$store.dispatch('search', this.guess)
       },
@@ -135,6 +126,7 @@
     },
     methods: {
       ...mapMutations({modalClose: 'modal.close'}),
+      ...mapMutations(['mute']),
       ...mapActions([
         'load',
         'reset',
@@ -142,18 +134,8 @@
         'stop',
         'next',
         'pass',
+        'changeVolume'
       ]),
-      mute () {
-        if (this.volumeCache > 0) {
-          this.$store.dispatch('changeVolume', this.volumeCache)
-          this.volumeVal = this.volumeCache
-          this.volumeCache = 0
-        } else {
-          this.$store.commit('mute')
-          this.volumeCache = this.volumeVal
-          this.volumeVal = 0
-        }
-      },
       answer (answer) {
         this.$store.dispatch('answer', answer).then(() => this.guess = '')
       },
@@ -201,18 +183,5 @@
 
     .element {
         margin-bottom: 1rem;
-    }
-
-    .volume-panel {
-        display: inline-flex;
-        align-items: center;
-    }
-
-    .volume-label {
-        -webkit-user-select: none; /* webkit (safari, chrome) browsers */
-        -moz-user-select: none; /* mozilla browsers */
-        -ms-user-select: none; /* IE10+ */
-        cursor: pointer;
-        margin-right: 5px;
     }
 </style>
