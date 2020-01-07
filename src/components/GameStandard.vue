@@ -136,11 +136,13 @@
         'replay',
         'stop',
         'next',
-        'pass',
         'changeVolume'
       ]),
       answer (answer) {
         this.$store.dispatch('answer', answer).then(() => this.guess = '')
+      },
+      pass () {
+        this.$store.dispatch('pass').then(() => this.guess = '')
       },
       focusAnswer ({target}) {
         if (document.activeElement !== target) {
