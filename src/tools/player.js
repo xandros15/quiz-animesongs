@@ -5,6 +5,10 @@ export class Player {
     this.howls = []
   }
 
+  clear () {
+    this.howls = []
+  }
+
   load (src) {
     this.howls.push(new Howl({
       src,

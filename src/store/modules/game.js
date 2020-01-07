@@ -174,6 +174,7 @@ export default {
     },
     async ['load'] ({state, commit, getters,}, settings) {
       commit('start')
+      player.clear()
       //load titles
       if (!state.engine || settings.language !== state.settings.language) {
         const acceptLang = ['en', settings.language]
