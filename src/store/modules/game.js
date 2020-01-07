@@ -208,7 +208,9 @@ export default {
       if (state.songs.length > 0 && getters.nextSong) {
         await dispatch('stop')
         commit('next')
-        player.load(getters.nextSong.sample)
+        if (getters.nextSong) {
+          player.load(getters.nextSong.sample)
+        }
         player.play()
       } else if (!getters.nextSong) {
         dispatch('stop')
