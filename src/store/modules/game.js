@@ -4,6 +4,7 @@ import { Player } from '../../tools/player'
 import GameStatus from './GameStatus'
 
 const player = new Player()
+const LOCAL_SETTINGS = 'game.standard.settings'
 
 export default {
   state: {
@@ -11,7 +12,7 @@ export default {
     songs: [],
     index: -1,
     volume: 0.5,
-    settings: {},
+    settings: localStorage[LOCAL_SETTINGS] ? JSON.parse(localStorage[LOCAL_SETTINGS]) : {},
     reply: false,
     answerCorrect: false,
     hints: [],
@@ -190,6 +191,7 @@ export default {
       }
       commit('setSongs', songs)
       commit('setSettings', settings)
+      localStorage[LOCAL_SETTINGS] = JSON.stringify(settings)
 
       if (state.songs && state.songs.length > 0) {
         commit('wait')
