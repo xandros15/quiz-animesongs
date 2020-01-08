@@ -10,14 +10,16 @@ export class Player {
   }
 
   load (src) {
-    this.howls.push(new Howl({
-      src,
-      autoplay: false,
-      volume: 1,
-      onloaderror: () => alert('Can\'t load next song.'),
-    }))
-    if (this.howls.length > 2) {
+    if (this.howls.length > 1) {
       this.howls.shift()
+    }
+    if (src) {
+      this.howls.push(new Howl({
+        src,
+        autoplay: false,
+        volume: 1,
+        onloaderror: () => alert('Can\'t load next song.'),
+      }))
     }
   }
 
