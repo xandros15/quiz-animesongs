@@ -9,6 +9,7 @@
         <div v-else>
             <Settings :default="settings" @start="load" v-if="isStatus('setup')"/>
             <div v-else>
+                <progress-bar :status="songNumber/songsMax" v-if="!isStatus('end')"/>
                 <div class="element">
                     <Volume @modify="changeVolume" @mute="mute" @unmute="changeVolume"/>
                 </div>
@@ -18,9 +19,6 @@
                             class="button is-warning" v-shortkey="['space']">
                         Reset?
                     </button>
-                </div>
-                <div class="element" v-else>
-                    <h3 class="title is-3">Song {{songNumber}}/{{songsMax}}</h3>
                 </div>
                 <div class="element" v-if="isStatus(['waiting', 'answered', 'pass',])">
                     <Replay @replay="replay" @stop="stop" v-if="isStatus(['answered', 'pass',])"/>
@@ -75,6 +73,7 @@
   import KeyBindsButton from './KeyBindsButton'
   import KeyBindsHelp from './KeyBindsHelp'
   import Modal from './Modal'
+  import ProgressBar from './ProgressBar'
   import Replay from './Replay'
   import ReportButton from './ReportButton'
   import Settings from './Settings'
@@ -84,6 +83,7 @@
   export default {
     name: 'game',
     components: {
+      ProgressBar,
       Volume,
       SongPreview,
       KeyBindsButton,
