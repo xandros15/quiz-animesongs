@@ -198,7 +198,7 @@ export default {
       if (state.songs && state.songs.length > 0) {
         commit('wait')
         if (state.settings.gameType === GameTypes.ONE_NOTE) {
-          player.load(getters.nextSong.sample, {onplay: () => setTimeout(() => dispatch('stop'), 1000)})
+          player.loadOneNote(getters.nextSong.sample, () => dispatch('stop'))
         } else {
           player.load(getters.nextSong.sample)
         }
@@ -217,7 +217,7 @@ export default {
         await dispatch('stop')
         commit('next')
         if (state.settings.gameType === GameTypes.ONE_NOTE) {
-          player.load(getters.nextSong.sample, {onplay: () => setTimeout(() => dispatch('stop'), 1000)})
+          player.loadOneNote(getters.nextSong.sample, () => dispatch('stop'))
         } else {
           player.load(getters.nextSong.sample)
         }

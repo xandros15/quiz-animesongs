@@ -24,6 +24,24 @@ export class Player {
     }
   }
 
+  loadOneNote (src, callback, options = {}) {
+    if (this.howls.length > 1) {
+      this.howls.shift()
+    }
+    if (src) {
+      const howl = new Howl({
+        ...options,
+        src,
+        autoplay: false,
+        volume: 1,
+        onloaderror: () => alert('Can\'t load next song.'),
+      })
+
+      howl.once('play', () => setTimeout(callback, 1000))
+      this.howls.push(howl)
+    }
+  }
+
   play (callback) {
     if (!this.howls[0]) {
       return
