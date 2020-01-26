@@ -9,12 +9,13 @@ export class Player {
     this.howls = []
   }
 
-  load (src) {
+  load (src, options = {}) {
     if (this.howls.length > 1) {
       this.howls.shift()
     }
     if (src) {
       this.howls.push(new Howl({
+        ...options,
         src,
         autoplay: false,
         volume: 1,
@@ -23,8 +24,15 @@ export class Player {
     }
   }
 
-  play () {
-    this.howls[0] && this.howls[0].play()
+  play (callback) {
+    if (!this.howls[0]) {
+      return
+    }
+    if (callback) {
+      this.howls[0].play().then(callback)
+    } else {
+      this.howls[0].play()
+    }
   }
 
   changeVolume (value) {
