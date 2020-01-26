@@ -235,7 +235,7 @@ export default {
       if (state.isModalOpen) {
         rootCommit('modal.close')
       } else if (getters.currentSong) {
-        if (state.settings.gameType !== GameTypes.ONE_NOTE) {
+        if (!state.settings.ownList && state.settings.gameType !== GameTypes.ONE_NOTE) {
           answer(getters.currentSong.id, false)
         }
         dispatch('stop')
