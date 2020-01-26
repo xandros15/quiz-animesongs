@@ -1,9 +1,9 @@
 <template>
     <span class="replay">
-        <button @click="toggle" class="button is-primary" v-if="!replay">
+        <button @click="toggle" class="button is-info is-light" v-if="!replay">
             Replay
         </button>
-        <button @click="toggle" class="button is-primary" v-else>
+        <button @click="toggle" class="button is-info is-light" v-else>
             Stop
         </button>
     </span>

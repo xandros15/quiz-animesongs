@@ -11,9 +11,11 @@
 </script>
 
 <style lang="scss">
+    $orange: #e47518;
+    $info: $orange;
+    $link: $orange;
     @import "~bulma";
-    @import '~bulma-slider';
-
+    @import '~bulma-slider/src/sass';
     #app {
         font-family: 'Avenir', Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;

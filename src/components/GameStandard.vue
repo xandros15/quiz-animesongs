@@ -16,14 +16,14 @@
                 <div class="element" v-if="isStatus('end')">
                     <h3 class="title is-3">Score {{score}}/{{maxScore}}</h3>
                     <button @click="reset" @shortkey="reset"
-                            class="button is-warning" v-shortkey="['space']">
+                            class="button is-info" v-shortkey="['space']">
                         Reset?
                     </button>
                 </div>
                 <div class="element" v-if="isStatus(['waiting', 'answered', 'pass',])">
                     <Replay @replay="replay" @stop="stop" v-if="isStatus(['answered', 'pass',])"/>
                     <button @click="next"
-                            @shortkey="next" class="button is-success"
+                            @shortkey="next" class="button is-info"
                             v-if="!isStatus('end')" v-shortkey="['space']">
                         {{ isLastSong ? 'Show Score' : 'Play Song' }}
                     </button>
