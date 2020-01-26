@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "bloodhound-js": "^1.2.3",
-    "bulma": "^0.7.5",
+    "bulma": "^0.8.0",
     "bulma-slider": "^2.0.0",
     "clipboard": "^2.0.4",
     "core-js": "^2.6.10",
