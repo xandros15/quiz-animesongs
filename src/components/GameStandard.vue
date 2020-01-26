@@ -25,7 +25,7 @@
                     <button @click="next"
                             @shortkey="next" class="button is-info"
                             v-if="!isStatus('end')" v-shortkey="['space']">
-                        {{ isLastSong ? 'Show Score' : 'Play Song' }}
+                        {{ isLastSong ? 'Show Score' : isFirstSong ? 'Start' : 'Next' }}
                     </button>
                 </div>
                 <div class="element" v-if="isStatus('play')">
