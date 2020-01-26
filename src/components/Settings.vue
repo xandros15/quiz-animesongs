@@ -105,8 +105,8 @@
           'end',
         ],
         titlesLanguage: {
-          'Polish': 'pl',
           'German': 'de',
+          'Polish': 'pl',
           'Spanish': 'es',
           'Italian': 'it',
         },
