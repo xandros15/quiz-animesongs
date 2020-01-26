@@ -74,11 +74,16 @@
                 </div>
             </div>
         </div>
-        <button @click="start" class="button">Start</button>
+        <div class="buttons has-addons">
+            <button @click="start(TYPE_STANDARD)" class="button">Standard</button>
+            <button @click="start(TYPE_ONE_NOTE)" class="button">One note</button>
+        </div>
     </div>
 </template>
 
 <script>
+  import GameTypes from '../store/modules/GameTypes'
+
   const MAX_YEAR = (new Date()).getFullYear()
   const MIN_YEAR = 1959
 
@@ -89,6 +94,8 @@
     },
     data () {
       return {
+        TYPE_STANDARD: GameTypes.STANDARD,
+        TYPE_ONE_NOTE: GameTypes.ONE_NOTE,
         MAX_YEAR,
         MIN_YEAR,
         samples: [
@@ -120,7 +127,8 @@
       }
     },
     methods: {
-      start () {
+      start (type) {
+        this.settings.gameType = type
         this.$emit('start', this.settings)
       },
       validateYears () {

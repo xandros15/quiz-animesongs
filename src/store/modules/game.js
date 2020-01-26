@@ -2,12 +2,14 @@ import { answer, getSongs, getSongsFromLocal } from '../../api/songs'
 import { loadHinter, search } from '../../tools/hinter'
 import { Player } from '../../tools/player'
 import GameStatus from './GameStatus'
+import GameTypes from './GameTypes'
 
 const player = new Player()
 const LOCAL_SETTINGS = 'game.standard.settings'
 
 export default {
   state: {
+    type: GameTypes.STANDARD,
     status: GameStatus.SETUP,
     songs: [],
     index: -1,
@@ -173,7 +175,7 @@ export default {
         return dispatch('incorrect')
       }, () => {})
     },
-    async ['load'] ({state, commit, getters,}, settings) {
+    async ['load'] ({state, commit, getters, dispatch}, settings) {
       commit('start')
       player.clear()
       //load titles
@@ -195,7 +197,11 @@ export default {
 
       if (state.songs && state.songs.length > 0) {
         commit('wait')
-        player.load(getters.nextSong.sample)
+        if (state.settings.gameType === GameTypes.ONE_NOTE) {
+          player.load(getters.nextSong.sample, {onplay: () => setTimeout(() => dispatch('stop'), 1000)})
+        } else {
+          player.load(getters.nextSong.sample)
+        }
       } else {
         commit('finish')
       }
@@ -210,7 +216,11 @@ export default {
       if (state.songs.length > 0 && getters.nextSong) {
         await dispatch('stop')
         commit('next')
-        player.load(getters.nextSong.sample)
+        if (state.settings.gameType === GameTypes.ONE_NOTE) {
+          player.load(getters.nextSong.sample, {onplay: () => setTimeout(() => dispatch('stop'), 1000)})
+        } else {
+          player.load(getters.nextSong.sample)
+        }
         player.play()
       } else if (!getters.nextSong) {
         dispatch('stop')
