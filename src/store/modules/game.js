@@ -137,14 +137,14 @@ export default {
       player.changeVolume(state.volume)
     },
     ['correct'] ({commit, state, dispatch, getters,}) {
-      if (!state.settings.ownList) {
+      if (!state.settings.ownList && state.settings.gameType !== GameTypes.ONE_NOTE) {
         answer(getters.currentSong.id, true)
       }
       dispatch('stop')
       commit('correct')
     },
     ['incorrect'] ({commit, state, dispatch, getters,}) {
-      if (!state.settings.ownList) {
+      if (!state.settings.ownList && state.settings.gameType !== GameTypes.ONE_NOTE) {
         answer(getters.currentSong.id, false)
       }
       dispatch('stop')
@@ -235,7 +235,9 @@ export default {
       if (state.isModalOpen) {
         rootCommit('modal.close')
       } else if (getters.currentSong) {
-        answer(getters.currentSong.id, false)
+        if (state.settings.gameType !== GameTypes.ONE_NOTE) {
+          answer(getters.currentSong.id, false)
+        }
         dispatch('stop')
         commit('pass')
       }
