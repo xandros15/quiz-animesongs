@@ -82,6 +82,7 @@
 </template>
 
 <script>
+  import { getDefaultLanguage, getLabeledLanguages } from '../api/languages'
   import GameTypes from '../store/modules/GameTypes'
 
   const MAX_YEAR = (new Date()).getFullYear()
@@ -104,12 +105,7 @@
           'middle',
           'end',
         ],
-        titlesLanguage: {
-          'German': 'de',
-          'Polish': 'pl',
-          'Spanish': 'es',
-          'Italian': 'it',
-        },
+        titlesLanguage: getLabeledLanguages(),
         availableTypes: ['op', 'ed', 'tm', 'in',],
         settings: {
           ownList: this.default.ownList || false,
@@ -117,7 +113,7 @@
           yearMax: this.default.yearMax || MAX_YEAR,
           yearMin: this.default.yearMin || MIN_YEAR,
           sample: this.default.sample || 'random',
-          language: this.default.language || 'pl',
+          language: this.default.language || getDefaultLanguage(),
         }
       }
     },
