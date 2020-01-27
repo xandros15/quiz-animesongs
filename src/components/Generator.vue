@@ -121,7 +121,6 @@
     },
     methods: {
       async showSongs () {
-        this.songs = []
         this.search = this.nextPage = this.prevPage = ''
         const exists = await existsMultiple(this.list)
         for (const id of this.list) {
