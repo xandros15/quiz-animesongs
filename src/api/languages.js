@@ -19,6 +19,10 @@ const availableLanguages = [
     label: 'Italian',
     alias: 'it',
   },
+  {
+    label: 'Japanese',
+    alias: 'ja',
+  },
 ]
 
 export const getDefaultLanguage = () => {
