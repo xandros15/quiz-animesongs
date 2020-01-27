@@ -157,7 +157,7 @@ export default {
       id = parseInt(id)
       for (const anime of getters.currentSong.anime) {//strict mode
         const anidbId = parseInt(anime.anidbId)
-        if (anidbId === id) {
+        if (anidbId === id || anime.name.toLowerCase() === name.toLowerCase()) {
           return dispatch('correct')
         }
       }
