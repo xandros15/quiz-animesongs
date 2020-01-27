@@ -180,7 +180,10 @@ export default {
       player.clear()
       //load titles
       if (!state.engine || settings.language !== state.settings.language) {
-        const acceptLang = ['en', settings.language]
+        const acceptLang = ['en',]
+        if (settings.language) {
+          acceptLang.push(settings.language)
+        }
         await loadHinter(acceptLang)
       }
       //load songs

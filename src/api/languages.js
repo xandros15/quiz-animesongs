@@ -1,5 +1,9 @@
 const availableLanguages = [
   {
+    label: 'None',
+    alias: false,
+  },
+  {
     label: 'German',
     alias: 'de',
   },
