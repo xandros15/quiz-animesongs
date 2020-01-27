@@ -156,7 +156,7 @@
 
 <style scoped>
     .settings {
-        max-width: 200px;
+        max-width: 205px;
         margin: auto;
     }
     .control {
