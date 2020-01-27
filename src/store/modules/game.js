@@ -1,5 +1,5 @@
 import { answer, getSongs, getSongsFromLocal } from '../../api/songs'
-import { loadHinter, search } from '../../tools/hinter'
+import { isHinterLoaded, loadHinter, search } from '../../tools/hinter'
 import { Player } from '../../tools/player'
 import GameStatus from './GameStatus'
 import GameTypes from './GameTypes'
@@ -179,7 +179,7 @@ export default {
       commit('start')
       player.clear()
       //load titles
-      if (!state.engine || settings.language !== state.settings.language) {
+      if (!isHinterLoaded() || settings.language !== state.settings.language) {
         const acceptLang = ['en',]
         if (settings.language) {
           acceptLang.push(settings.language)

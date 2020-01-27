@@ -37,12 +37,14 @@ const hinter = new Bloodhound({
   queryTokenizer: Bloodhound.tokenizers.whitespace,
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('title')
 })
+let isInitialized = false
 
 export const loadHinter = async langs => {
   hinter.clear()
   const titles = await getTitles(langs)
   hinter.add(titles)
   await hinter.initialize()
+  isInitialized = true
 
   return hinter
 }
@@ -53,4 +55,8 @@ export const search = (guess, callback) => {
   } else {
     callback([])
   }
+}
+
+export const isHinterLoaded = () => {
+  return isInitialized
 }
