@@ -1,7 +1,8 @@
 <template>
-    <tr :class="{'is-selected': inlist}" class="song">
+    <tr :class="{'is-selected': inlist, 'disabled': !hasFile}" class="song">
         <td>
             <input :checked="inlist" :disabled="!hasFile" :id="`song-${song.id}`" :title="`select ${song.name}`"
+                   class="checkbox"
                    @click="select" type="checkbox">
         </td>
         <td>
@@ -9,7 +10,7 @@
                v-if="hasFile">
                 {{song.name}} <small v-if="song.version && song.version.length > 0">({{ song.version }})</small>
             </a>
-            <span class="disabled" v-else>
+            <span v-else>
                 {{song.name}} <small v-if="song.version && song.version.length > 0">({{ song.version }})</small>
             </span>
         </td>
@@ -88,17 +89,23 @@
   }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
     tr.is-selected {
         background-color: #d27214;
     }
+
     .clickable {
         cursor: pointer;
     }
+
     .disabled {
-        text-decoration: line-through;
-        cursor: not-allowed;
+        opacity: .5;
+
+        & .checkbox {
+            cursor: not-allowed;
+        }
     }
+
     .song {
         margin-bottom: 1rem;
     }
