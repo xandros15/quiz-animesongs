@@ -37,7 +37,7 @@ export class Player {
         onloaderror: () => alert('Can\'t load next song.'),
       })
 
-      howl.once('play', () => setTimeout(callback, 1000))
+      howl.once('play', () => setTimeout(callback, 1500))
       this.howls.push(howl)
     }
   }
