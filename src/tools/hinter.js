@@ -15,15 +15,19 @@ const getTitles = langs => {
         const titles = []
         const uniq = []
         data.querySelectorAll('anime').forEach(anime => {
-          const id = anime.getAttribute('aid')
+          const id = parseInt(anime.getAttribute('aid'))
           anime.querySelectorAll('title').forEach(title => {
-            const content = title.textContent.replace(/`/g, '\'')
+            let content = title.textContent.replace(/`/g, '\'')
+            content = content.replace(/\s\(\w+\)$/g, '')//remove last bracket info of ver anime
             const lang = title.getAttribute('xml:lang')
             const type = title.getAttribute('type')
             if (type === 'main' || (type === 'official' && langs.indexOf(lang) !== -1)) {
-              if (uniq.indexOf(content.toLowerCase()) === -1) {
-                titles.push({id, title: content})
+              const index = uniq.indexOf(content.toLowerCase())
+              if (index === -1) {
+                titles.push({ids: [id], title: content})
                 uniq.push(content.toLowerCase())
+              } else if (titles[index].ids.indexOf(id) === -1) {
+                titles[index].ids.push(id)
               }
             }
           })

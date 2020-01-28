@@ -46,8 +46,8 @@
                         />
                     </div>
                     <div :key="key" class="element" v-for="(hint, key) in hints">
-                        <button @click="answer({name: hint.title, id: hint.id})"
-                                @shortkey="answer({name: hint.title, id: hint.id})"
+                        <button @click="answer({name: hint.title, ids: hint.ids})"
+                                @shortkey="answer({name: hint.title, ids: hint.ids})"
                                 class="button"
                                 v-shortkey="['alt', key + 1]">
                             {{hint.title}}

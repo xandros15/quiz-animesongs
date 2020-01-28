@@ -150,14 +150,14 @@ export default {
       dispatch('stop')
       commit('incorrect')
     },
-    ['answer'] ({dispatch, getters}, {name, id}) {
+    ['answer'] ({dispatch, getters}, {name, ids}) {
       if (!getters.currentSong) {
         return
       }
-      id = parseInt(id)
+
       for (const anime of getters.currentSong.anime) {//strict mode
         const anidbId = parseInt(anime.anidbId)
-        if (anidbId === id || anime.name.toLowerCase() === name.toLowerCase()) {
+        if (ids.indexOf(anidbId) !== -1 || anime.name.toLowerCase() === name.toLowerCase()) {
           return dispatch('correct')
         }
       }
@@ -166,7 +166,7 @@ export default {
       }
       const animeIds = getters.currentSong.anime.map(anime => parseInt(anime.anidbId))
       search(name, hints => {
-        const guessIds = hints.map(({id}) => parseInt(id))
+        const guessIds = hints.flatMap(anime => anime.ids)
         for (const id of animeIds) {
           if (guessIds.indexOf(id) !== -1) {
             return dispatch('correct')
