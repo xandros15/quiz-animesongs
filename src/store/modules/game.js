@@ -164,12 +164,15 @@ export default {
       if (name.length < 3) { //if your answer is less than 3 chars, then only strict mode works
         return dispatch('incorrect')
       }
-      const animeIds = getters.currentSong.anime.map(anime => parseInt(anime.anidbId))
+
       search(name, hints => {
-        const guessIds = hints.flatMap(anime => anime.ids)
-        for (const id of animeIds) {
-          if (guessIds.indexOf(id) !== -1) {
-            return dispatch('correct')
+        for (const anime of hints) {
+          for (const hintId of anime.ids) {
+            for (const currentAnime of getters.currentSong.anime) {
+              if (currentAnime.anidbId === hintId) {
+                return dispatch('correct')
+              }
+            }
           }
         }
         return dispatch('incorrect')
