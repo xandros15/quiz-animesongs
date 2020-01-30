@@ -226,7 +226,7 @@
         left: 0;
     }
     .progress.is-default {
-        background-image: linear-gradient(to right, #e47518 30%, #dbdbdb 30%);
+        background-image: linear-gradient(to right, #e47518 30%, #ededed 30%);
     }
     .file-in-progress {
         color: #e47518;
