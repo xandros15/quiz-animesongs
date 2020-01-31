@@ -20,6 +20,14 @@ const availableLanguages = [
     alias: 'it',
   },
   {
+    label: 'Dutch',
+    alias: 'nl',
+  },
+  {
+    label: 'French',
+    alias: 'fr',
+  },
+  {
     label: 'Japanese',
     alias: 'ja',
   },
