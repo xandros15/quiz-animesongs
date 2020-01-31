@@ -14,7 +14,7 @@
         </div>
         <div class="search field has-addons">
             <p class="control">
-                <button :disabled="loading" @click="prev" class="button" v-if="hasPrev">Prev</button>
+                <button :disabled="disabled" @click="prev" class="button" v-if="hasPrev">Prev</button>
             </p>
             <p class="control">
                 <input class="input" placeholder="Search songs to your list" title="search songs to your list"
@@ -22,7 +22,7 @@
                        v-model.trim="search">
             </p>
             <p>
-                <button :disabled="loading" @click="next" class="button" v-if="hasNext">Next</button>
+                <button :disabled="disabled" @click="next" class="button" v-if="hasNext">Next</button>
             </p>
         </div>
         <main class="generator-main">
@@ -87,7 +87,6 @@
       return {
         player: new Audio(),
         songs: [],
-        loading: false,
         search: '',
         nextPage: '',
         prevPage: '',
@@ -121,6 +120,11 @@
     },
     methods: {
       async showSongs () {
+        if (this.disabled) {
+          return
+        }
+        this.disabled = true
+        this.songs = []
         this.search = this.nextPage = this.prevPage = ''
         const exists = await existsMultiple(this.list)
         for (const id of this.list) {
@@ -133,7 +137,7 @@
           }
           this.songs.push(song)
         }
-
+        this.disabled = false
       },
       async searchSong () {
         if (this.disabled) {
