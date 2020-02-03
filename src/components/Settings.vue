@@ -86,7 +86,7 @@
   import GameTypes from '../store/modules/GameTypes'
 
   const MAX_YEAR = (new Date()).getFullYear()
-  const MIN_YEAR = 1959
+  const MIN_YEAR = 1958
 
   export default {
     name: 'settings',
