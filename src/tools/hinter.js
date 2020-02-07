@@ -2,6 +2,29 @@ import Bloodhound from 'bloodhound-js'
 
 const titlesUrl = '/anime-titles.xml'
 
+let titles = []
+let uniq = []
+
+const titleTranslator = title => {
+  if (title.indexOf('`') !== -1) {
+    title = title.replace(/`/g, '\'')//translate grave accent to apostrophe
+  }
+  if (title.indexOf(' (') !== -1) {
+    title = title.replace(/\s\(\w+\)$/g, '')//remove last bracket info of ver anime
+  }
+  return title
+}
+
+const addTitle = (id, title) => {
+  const index = uniq.indexOf(title.toLowerCase())
+  if (index === -1) {
+    titles.push({ids: [id], title})
+    uniq.push(title.toLowerCase())
+  } else if (titles[index].ids.indexOf(id) === -1) {
+    titles[index].ids.push(id)
+  }
+}
+
 const getTitles = langs => {
   return fetch(titlesUrl)
     .then(
@@ -12,23 +35,16 @@ const getTitles = langs => {
     )
     .then(
       async data => {
-        const titles = []
-        const uniq = []
+        titles = []
+        uniq = []
         data.querySelectorAll('anime').forEach(anime => {
           const id = parseInt(anime.getAttribute('aid'))
           anime.querySelectorAll('title').forEach(title => {
-            let content = title.textContent.replace(/`/g, '\'')
-            content = content.replace(/\s\(\w+\)$/g, '')//remove last bracket info of ver anime
+            let content = titleTranslator(title.textContent)
             const lang = title.getAttribute('xml:lang')
             const type = title.getAttribute('type')
             if (type === 'main' || (type === 'official' && langs.indexOf(lang) !== -1)) {
-              const index = uniq.indexOf(content.toLowerCase())
-              if (index === -1) {
-                titles.push({ids: [id], title: content})
-                uniq.push(content.toLowerCase())
-              } else if (titles[index].ids.indexOf(id) === -1) {
-                titles[index].ids.push(id)
-              }
+              addTitle(id, content)
             }
           })
         })
