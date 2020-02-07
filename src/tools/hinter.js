@@ -25,6 +25,13 @@ const addTitle = (id, title) => {
   }
 }
 
+const addAltTitle = (id, title) => {
+  if (title.indexOf('-iro') !== -1) {
+    title = title.replace(/-(iro(?:\s|$))/g, '$1')//this is a case for -iro
+    addTitle(id, title)
+  }
+}
+
 const getTitles = langs => {
   return fetch(titlesUrl)
     .then(
@@ -45,6 +52,7 @@ const getTitles = langs => {
             const type = title.getAttribute('type')
             if (type === 'main' || (type === 'official' && langs.indexOf(lang) !== -1)) {
               addTitle(id, content)
+              addAltTitle(id, content)
             }
           })
         })
