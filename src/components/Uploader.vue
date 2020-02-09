@@ -126,31 +126,36 @@
         //then upload
         this.uploading = true
         for (const item of this.list) {
-          if (item.file.type.indexOf('audio/mp3') === 0 || item.file.type.indexOf('audio/mpeg') === 0) {
-            const response = await upload({
-              file: item.file,
-              threshold: this.threshold,
-              auth: this.auth,
-            }).catch(e => {
-              item.message = e
-              item.hasError = true
-            })
-            if (response.ok) {
-              item.message = 'Uploaded'
-              item.hasError = false
-            } else if (response.status === 400) {
+          try {
+            if (item.file.size > 0 && (item.file.type.indexOf('audio/mp3') === 0 || item.file.type.indexOf('audio/mpeg') === 0)) {
+              const response = await upload({
+                file: item.file,
+                threshold: this.threshold,
+                auth: this.auth,
+              }).catch(e => {
+                item.message = e
+                item.hasError = true
+              })
+              if (response.ok) {
+                item.message = 'Uploaded'
+                item.hasError = false
+              } else if (response.status === 400) {
+                item.message = 'Bad file'
+                item.hasError = true
+              } else if (response.status === 401) {
+                item.message = 'Unauthorized'
+                item.hasError = true
+              } else {
+                item.message = item.hasError === true ? item.message : 'Server error'
+                item.hasError = true
+              }
+            } else {
               item.message = 'Bad file'
               item.hasError = true
-            } else if (response.status === 401) {
-              item.message = 'Unauthorized'
-              item.hasError = true
-            } else {
-              item.message = item.hasError === true ? item.message : 'Server error'
-              item.hasError = true
             }
-          } else {
-            item.message = 'Bad file'
-            item.hasError = true
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error(e)
           }
 
           item.isUploading = false
