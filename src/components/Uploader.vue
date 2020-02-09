@@ -45,11 +45,29 @@
                                 <div class="content upload-actions">
                                     <ul v-if="list.length > 0">
                                         <li :key="item.id" v-for="item in list">
-                                            <span :class="item.isUploading ? 'file-in-progress' : (item.hasError ? 'file-fail' : 'file-success')">&#9733;</span>
+                                            <span v-if="item.state === UPLOAD_STATE.INIT">
+                                            <span>
+                                                &#9733;
+                                            </span>
+                                            In que "{{ item.name }}"
+                                            </span>
+                                            <span v-else-if="item.state === UPLOAD_STATE.UPLOADING">
+                                            <span class="file-in-progress">&#9733;</span>
+                                            Uploading "{{ item.name }}"
+                                            <progress class="progress is-small is-default" max="100">15%</progress>
+                                            </span>
+                                            <span v-else-if="item.state === UPLOAD_STATE.ERROR">
+                                            <span class="file-fail">
+                                                &#9733;
+                                            </span>
                                             {{ item.message }} "{{ item.name }}"
-                                            <progress class="progress is-small is-default" max="100"
-                                                      v-if="item.isUploading">15%
-                                            </progress>
+                                            </span>
+                                            <span v-else-if="item.state === UPLOAD_STATE.DONE">
+                                            <span class="file-success">
+                                                &#9733;
+                                            </span>
+                                            Uploaded "{{ item.name }}"
+                                            </span>
                                         </li>
                                     </ul>
                                 </div>
@@ -68,11 +86,19 @@
   import { upload } from '../api/songs'
   import Admin from './Admin'
 
+  const UPLOAD_STATE = {
+    'INIT': 1,
+    'UPLOADING': 2,
+    'ERROR': 3,
+    'DONE': 4,
+  }
+
   export default {
     name: 'uploader',
     components: {Admin},
     data () {
       return {
+        UPLOAD_STATE,
         isDragged: false,
         uploading: false,
         threshold: 50,
@@ -109,16 +135,12 @@
         this.list = []
         let it = 0
         for (const file of files) {
-          let message = 'Uploading'
-          let isUploading = true
-          let hasError = null
           this.list[it] = {
             id: it,
             file: file,
             name: file.name,
-            isUploading,
-            hasError,
-            message,
+            state: UPLOAD_STATE.INIT,
+            message: '',
           }
           it++
         }
@@ -128,37 +150,37 @@
         for (const item of this.list) {
           try {
             if (item.file.size > 0 && (item.file.type.indexOf('audio/mp3') === 0 || item.file.type.indexOf('audio/mpeg') === 0)) {
+              item.state = UPLOAD_STATE.UPLOADING
               const response = await upload({
                 file: item.file,
                 threshold: this.threshold,
                 auth: this.auth,
               }).catch(e => {
                 item.message = e
-                item.hasError = true
+                item.state = UPLOAD_STATE.ERROR
               })
               if (response.ok) {
-                item.message = 'Uploaded'
-                item.hasError = false
+                item.state = UPLOAD_STATE.DONE
               } else if (response.status === 400) {
                 item.message = 'Bad file'
-                item.hasError = true
+                item.state = UPLOAD_STATE.ERROR
               } else if (response.status === 401) {
                 item.message = 'Unauthorized'
-                item.hasError = true
+                item.state = UPLOAD_STATE.ERROR
               } else {
-                item.message = item.hasError === true ? item.message : 'Server error'
-                item.hasError = true
+                item.message = item.state === UPLOAD_STATE.ERROR ? item.message : 'Server error'
+                item.state = UPLOAD_STATE.ERROR
               }
             } else {
               item.message = 'Bad file'
-              item.hasError = true
+              item.state = UPLOAD_STATE.ERROR
             }
           } catch (e) {
+            item.message = 'Bad file'
+            item.state = UPLOAD_STATE.ERROR
             // eslint-disable-next-line no-console
             console.error(e)
           }
-
-          item.isUploading = false
           Vue.set(this.list, item.id, item)
         }
 
