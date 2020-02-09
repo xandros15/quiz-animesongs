@@ -52,7 +52,7 @@ const getSongsFromLocal = async ({list, settings}) => {
   return songs
 }
 
-const upload = (file, auth) => {
+const upload = ({file, threshold, auth}) => {
   const opt = {
     method: 'PUT',
     headers: {
@@ -64,7 +64,7 @@ const upload = (file, auth) => {
     opt.headers['Authorization'] = auth
   }
 
-  return fetch(apiQuiz + '/add', opt)
+  return fetch(apiQuiz + '/add?threshold=' + encodeURIComponent(threshold), opt)
 }
 
 const existsMultiple = ids => {

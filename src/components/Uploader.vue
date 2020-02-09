@@ -7,6 +7,19 @@
                     <h1 class="title is-1 has-text-centered">Upload songs</h1>
                     <!-- form -->
                     <div class="card-container">
+                        <div class="threshold-card card">
+                            <label for="threshold">Threshold: {{threshold}}</label>
+                            <input
+                                    autocomplete="false"
+                                    class="slider is-info"
+                                    id="threshold"
+                                    max="100"
+                                    min="0"
+                                    step="1"
+                                    type="range"
+                                    v-model.number="threshold"
+                            >
+                        </div>
                         <div class="upload-card card" v-if="!uploading">
                             <div class="upload-drop card-image">
                                 <div :class="{'is-active': isDragged}" class="upload-drop-content">
@@ -62,6 +75,7 @@
       return {
         isDragged: false,
         uploading: false,
+        threshold: 50,
         list: [],
       }
     },
@@ -113,7 +127,11 @@
         this.uploading = true
         for (const item of this.list) {
           if (item.file.type.indexOf('audio/mp3') === 0 || item.file.type.indexOf('audio/mpeg') === 0) {
-            const response = await upload(item.file, this.auth).catch(e => {
+            const response = await upload({
+              file: item.file,
+              threshold: this.threshold,
+              auth: this.auth,
+            }).catch(e => {
               item.message = e
               item.hasError = true
             })
@@ -195,7 +213,13 @@
     .upload-drop-bg.is-active {
         opacity: 0;
     }
-
+    .threshold-card {
+        padding-top: 1rem;
+        display: flex;
+        align-items: center;
+        margin: auto;
+        flex-direction: column;
+    }
     .upload-drop-content {
         transition: opacity .3s;
         position: relative;
