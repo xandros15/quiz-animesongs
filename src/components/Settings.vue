@@ -50,7 +50,7 @@
                 <label class="label" for="difficulty">Difficulty</label>
                 <div class="control">
                     <div class="select">
-                        <select id="difficulty" v-model="settings.difficulty">
+                        <select :disabled="settings.ownList" id="difficulty" v-model="settings.difficulty">
                             <option :key="difficulty" :value="difficulty" v-for="difficulty in difficulties">
                                 {{difficulty}}
                             </option>
