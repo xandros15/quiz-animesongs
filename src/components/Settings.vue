@@ -138,11 +138,6 @@
         }
       }
     },
-    created () {
-      if (this.lastSettings) {
-        this.settings = this.lastSettings
-      }
-    },
     methods: {
       start (type) {
         this.settings.gameType = type
