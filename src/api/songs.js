@@ -10,6 +10,7 @@ const getSongs = ({settings}) => {
     types: settings.types,
     yearMax: settings.yearMax,
     yearMin: settings.yearMin,
+    difficulty: settings.difficulty || 'all',
   }
 
   const parsedParams = Object.keys(params).map(k => {

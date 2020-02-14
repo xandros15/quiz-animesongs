@@ -47,6 +47,20 @@
         </div>
         <div class="element">
             <div class="field">
+                <label class="label" for="difficulty">Difficulty</label>
+                <div class="control">
+                    <div class="select">
+                        <select id="difficulty" v-model="settings.difficulty">
+                            <option :key="difficulty" :value="difficulty" v-for="difficulty in difficulties">
+                                {{difficulty}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="element">
+            <div class="field">
                 <label class="label" for="sample">Sample</label>
                 <div class="control">
                     <div class="select">
@@ -105,9 +119,16 @@
           'middle',
           'end',
         ],
+        difficulties: [
+          'all',
+          'hard',
+          'medium',
+          'easy',
+        ],
         titlesLanguage: getLabeledLanguages(),
         availableTypes: ['op', 'ed', 'tm', 'in',],
         settings: {
+          difficulty: this.default.difficulty || 'all',
           ownList: this.default.ownList || false,
           types: this.default.types || ['op', 'ed'],
           yearMax: this.default.yearMax || MAX_YEAR,
