@@ -10,7 +10,7 @@ const titleTranslator = title => {
     title = title.replace(/`/g, '\'')//translate grave accent to apostrophe
   }
   if (title.indexOf(' (') !== -1) {
-    title = title.replace(/\s\(\w+\)$/g, '')//remove last bracket info of ver anime
+    title = title.replace(/\s\([\w\s]+\)$/g, '')//remove last bracket info of ver anime
   }
   return title
 }
