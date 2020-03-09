@@ -1,5 +1,12 @@
 import { Howl, Howler } from 'howler'
 
+const baseOptions = {
+  autoplay: false,
+  volume: 1,
+  html5: true,
+  onloaderror: () => alert('Can\'t load next song.')
+}
+
 export class Player {
   constructor () {
     this.howls = []
@@ -16,10 +23,8 @@ export class Player {
     if (src) {
       this.howls.push(new Howl({
         ...options,
+        ...baseOptions,
         src,
-        autoplay: false,
-        volume: 1,
-        onloaderror: () => alert('Can\'t load next song.'),
       }))
     }
   }
@@ -31,10 +36,8 @@ export class Player {
     if (src) {
       const howl = new Howl({
         ...options,
+        ...baseOptions,
         src,
-        autoplay: false,
-        volume: 1,
-        onloaderror: () => alert('Can\'t load next song.'),
       })
 
       howl.once('play', () => setTimeout(callback, 1500))
