@@ -4,7 +4,7 @@ export default {
     commit('setAuth', {auth})
   },
   ['logout'] ({commit}) {
-    localStorage.auth = null
+    localStorage.removeItem('auth')
     commit('setAuth', {auth: null})
   },
   ['openKeyBindModal'] ({commit}) {
