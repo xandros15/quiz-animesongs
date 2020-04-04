@@ -46,8 +46,9 @@
       if (this.auth) {
         this.reports = []
         const {reports} = await reportApi.getReports({auth: this.auth})
+        const songs = await metaApi.getSongs(reports.map(i => i.id))
         for (const report of reports) {
-          const meta = await metaApi.getMeta(report.id)
+          const meta = songs.find(i => i.id === report.id)
           meta.count = report.count
           this.reports.push(meta)
         }

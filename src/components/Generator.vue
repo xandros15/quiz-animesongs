@@ -127,8 +127,7 @@
         this.songs = []
         this.search = this.nextPage = this.prevPage = ''
         const exists = await existsMultiple(this.list)
-        for (const id of this.list) {
-          const song = await api.getMeta(id)
+        for (const song of await api.getSongs(this.list)) {
           const exist = exists.find(({id}) => song.id === id)
           song.sample = exist ? exist.sample : {
             start: false,

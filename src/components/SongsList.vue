@@ -44,11 +44,7 @@
         event.target.setSelectionRange(0, this.textList.length)
       },
       async loadList () {
-        this.songs = []
-        for (const id of this.list) {
-          const song = await api.getMeta(id)
-          this.songs.push(song)
-        }
+        this.songs = await api.getSongs(this.list)
       },
     },
   }

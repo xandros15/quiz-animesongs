@@ -25,8 +25,9 @@ const getSongs = ({settings}) => {
     .then(response => response.json())
     .then(async ({songs}) => {
       const newSongs = []
+      const metas = await metaApi.getSongs(songs.map(i => i.id))
       for (const song of songs) {
-        const newSong = await metaApi.getMeta(song.id)
+        const newSong = metas.find(({id}) => id === song.id)
         newSong.sample = songToUrl({song, sample: settings.sample})
         newSong.sound = new Audio()
         newSongs.push(newSong)
@@ -40,10 +41,11 @@ const getSongsFromLocal = async ({list, settings}) => {
   list = slice(list, 0, 50)
   let songs = []
   const existSongs = await existsMultiple(list)
+  const metas = await metaApi.getSongs(list)
   for (const song of existSongs) {
     const {sample} = song
     if (sample && (sample.start || sample.middle || sample.end)) {
-      const newSong = await metaApi.getMeta(song.id)
+      const newSong = metas.find(({id}) => id === song.id)
       newSong.sample = songToUrl({song, sample: settings.sample})
       newSong.sound = new Audio()
       songs.push(newSong)
