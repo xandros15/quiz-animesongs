@@ -93,8 +93,8 @@ const answer = (id, correct) => {
 function songToUrl ({song, sample}) {
   if (sample === 'random' || !song.sample[sample]) {
     const samples = []
-    for (const key in song.sample) {
-      if (song.sample.hasOwnProperty(key) && song.sample[key] === true) {
+    for (const [key, value] of Object.entries(song.sample)) {
+      if (value === true) {
         samples.push(key)
       }
     }
