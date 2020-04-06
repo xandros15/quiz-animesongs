@@ -89,15 +89,15 @@
       }),
     },
     methods: {
-      ...mapActions(['logout']),
+      ...mapActions(['logout', 'login',]),
       async authorize () {
         const credentials = await authorize({password: this.form.pass, username: this.form.login})
         if (!credentials) {
           alert('Wrong login or password')
           this.isModalOpen = false
         } else {
-          const auth = 'Basic ' + btoa(credentials + ':')
-          this.$store.dispatch('login', {auth}).then(() => {
+          const auth = 'Bearer ' + credentials.token
+          this.login({auth}).then(() => {
             this.form.login = this.form.pass = ''
             this.isModalOpen = false
           })
