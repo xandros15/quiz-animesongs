@@ -6,13 +6,14 @@ const addReport = id => {
 
 const removeReport = ({id, auth}) => {
   const opt = {
+    method: 'DELETE',
     headers: {}
   }
   if (auth) {
     opt.headers['Authorization'] = auth
   }
 
-  return fetch(API_URL + '/' + id, {method: 'DELETE'})
+  return fetch(API_URL + '/' + id, opt)
 }
 
 const getReports = ({auth}) => {
