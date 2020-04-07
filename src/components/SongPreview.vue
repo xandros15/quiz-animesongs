@@ -16,6 +16,7 @@
         <div style="margin-bottom: 1rem">
             <h3 :key="anime.anidbId" class="title is-5" v-for="anime in song.anime">
                 <a :href="'https://anidb.net/a' + anime.anidbId" target="_blank">{{anime.name}}</a>
+                <small class="types">({{ anime.types.join(', ') }})</small>
             </h3>
         </div>
         <div style="margin-bottom: 1rem">
@@ -38,5 +39,8 @@
   }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+    .types {
+        margin-left: .5rem;
+    }
 </style>
