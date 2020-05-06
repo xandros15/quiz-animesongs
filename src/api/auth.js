@@ -1,4 +1,4 @@
-const API_URL = 'https://quiz.animesongs.org/api/auth'
+const API_URL = process.env.NODE_ENV === 'development' ? 'http://localhost/auth' : 'https://quiz.animesongs.org/api/auth'
 
 const authorize = params => fetch(API_URL, {
   method: 'POST',
