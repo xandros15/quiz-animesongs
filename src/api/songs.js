@@ -1,8 +1,7 @@
 import { shuffle, slice } from 'lodash'
 import metaApi from './meta'
 
-const apiQuiz = 'https://quiz.animesongs.org/api/songs'
-// const apiQuiz = 'http://localhost/songs'
+const apiQuiz = process.env.NODE_ENV === 'development' ? 'http://localhost/songs' : 'https://quiz.animesongs.org/api/songs'
 
 const getSongs = ({settings}) => {
   const encode = encodeURIComponent
