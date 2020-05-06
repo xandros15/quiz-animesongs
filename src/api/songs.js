@@ -32,6 +32,9 @@ const getSongs = ({settings}) => {
         newSongs.push(newSong)
       }
       return newSongs
+    }).catch(message => {
+      console.error(message)
+      return {ok: false}
     })
 }
 
@@ -67,6 +70,10 @@ const upload = ({file, threshold, auth}) => {
   }
 
   return fetch(apiQuiz + '/add?threshold=' + encodeURIComponent(threshold), opt)
+    .catch(message => {
+      console.error(message)
+      return {ok: false}
+    })
 }
 
 const existsMultiple = ids => {
@@ -78,7 +85,12 @@ const existsMultiple = ids => {
 }
 
 const exists = id => {
-  return fetch(apiQuiz + '/has/' + id).then(r => r.ok ? r.json() : {})
+  return fetch(apiQuiz + '/has/' + id)
+    .then(r => r.ok ? r.json() : {})
+    .catch(message => {
+      console.error(message)
+      return {ok: false}
+    })
 }
 
 const answer = (id, correct) => {
@@ -87,6 +99,10 @@ const answer = (id, correct) => {
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({'correct': correct})
   }).then(r => r.ok)
+    .catch(message => {
+      console.error(message)
+      return {ok: false}
+    })
 }
 
 function songToUrl ({song, sample}) {
