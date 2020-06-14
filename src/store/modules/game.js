@@ -1,4 +1,4 @@
-import { answer, getSongs, getSongsFromLocal } from '../../api/songs'
+import { answer, getRestricted, getSongs, getSongsFromLocal } from '../../api/songs'
 import { isHinterLoaded, loadHinter, search } from '../../tools/hinter'
 import { Player } from '../../tools/player'
 import GameStatus from './GameStatus'
@@ -22,6 +22,7 @@ export default {
     score: 0,
     maxScore: 0,
     loadedImage: false,
+    restricted: [],
   },
   getters: {
     isFirstSong (state) {
@@ -114,6 +115,9 @@ export default {
     ['setSettings'] (state, settings) {
       state.settings = settings
     },
+    ['setRestricted'] (state, ids) {
+      state.restricted = ids
+    }
   },
   actions: {
     ['search'] ({commit, state}, guess) {
@@ -188,6 +192,8 @@ export default {
           acceptLang.push(settings.language)
         }
         await loadHinter(acceptLang)
+        const restricted = await getRestricted()
+        commit('setRestricted', restricted)
       }
       //load songs
       let songs = []
@@ -197,6 +203,11 @@ export default {
       } else {
         songs = await getSongs({settings})
       }
+      songs = songs.map(song => {
+        song.restricted = state.restricted.indexOf(parseInt(song.anime[0].anidbId)) !== -1
+        return song
+      })
+
       commit('setSongs', songs)
       commit('setSettings', settings)
       localStorage[LOCAL_SETTINGS] = JSON.stringify(settings)

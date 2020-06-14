@@ -1,7 +1,15 @@
 import { shuffle, slice } from 'lodash'
 import metaApi from './meta'
 
-const apiQuiz = process.env.NODE_ENV === 'development' ? 'http://localhost/songs' : 'https://quiz.animesongs.org/api/songs'
+const apiQuiz =
+  // process.env.NODE_ENV === 'development' ?   'http://localhost/songs' :
+  'https://quiz.animesongs.org/api/songs'
+
+const getRestricted = () => {
+  return fetch('/restricted.json')
+    .then(r => r.ok ? r.json() : [])
+    .catch(() => [])
+}
 
 const getSongs = ({settings}) => {
   const encode = encodeURIComponent
@@ -121,6 +129,7 @@ function songToUrl ({song, sample}) {
 }
 
 export {
+  getRestricted,
   getSongsFromLocal,
   getSongs,
   existsMultiple,
