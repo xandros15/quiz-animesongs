@@ -32,9 +32,27 @@
                     <th>
                         <input :checked="hasAllSelected" @click="toggleAll" title="select all songs" type="checkbox">
                     </th>
-                    <th>song</th>
-                    <th>artist</th>
-                    <th>anime</th>
+                    <th>
+                        <a @click="orderBy('song')" href="#" title="">
+                            <span v-if="order.name === 'song'"><span v-if="order.type === 'ASC'">▲</span><span
+                                    v-else>▼</span></span>
+                            song
+                        </a>
+                    </th>
+                    <th>
+                        <a @click="orderBy('artist')" href="#" title="">
+                            <span v-if="order.name === 'artist'"><span v-if="order.type === 'ASC'">▲</span><span
+                                    v-else>▼</span></span>
+                            artists
+                        </a>
+                    </th>
+                    <th>
+                        <a @click="orderBy('anime')" href="#" title="">
+                            <span v-if="order.name === 'anime'"><span v-if="order.type === 'ASC'">▲</span><span
+                                    v-else>▼</span></span>
+                            anime
+                        </a>
+                    </th>
                     <th>start</th>
                     <th>middle</th>
                     <th>end</th>
@@ -48,7 +66,7 @@
                          @click="toggleSong(song.id)
                      "
                          @play="playSample"
-                         v-for="song in songs"/>
+                         v-for="song in sortedSongs"/>
                 </tbody>
             </table>
         </main>
@@ -85,6 +103,7 @@
     },
     data () {
       return {
+        order: {name: '', type: ''},
         player: new Audio(),
         songs: [],
         search: '',
@@ -97,6 +116,31 @@
       }
     },
     computed: {
+      sortedSongs () {
+        const songs = [...this.songs]
+        const {type, name} = this.order
+        switch (name) {
+          case 'song':
+            songs.sort((a, b) => {
+              return type === 'ASC' ? ('' + a.name).localeCompare(b.name) :
+                ('' + b.name).localeCompare(a.name)
+            })
+            break
+          case 'artist':
+            songs.sort((a, b) => {
+              return type === 'ASC' ? ('' + a.artists[0].name).localeCompare(b.artists[0].name) :
+                ('' + b.artists[0].name).localeCompare(a.artists[0].name)
+            })
+            break
+          case 'anime':
+            songs.sort((a, b) => {
+              return type === 'ASC' ? ('' + a.anime[0].name).localeCompare(b.anime[0].name) :
+                ('' + b.anime[0].name).localeCompare(a.anime[0].name)
+            })
+            break
+        }
+        return songs
+      },
       hasAllSelected () {
         for (const song of this.songs) {
           if (!song.sample.start && !song.sample.middle && !song.sample.end) {
@@ -119,6 +163,20 @@
       },
     },
     methods: {
+      orderBy (sort) {
+        const {name, type} = this.order
+        if (name === sort) {
+          if (type === 'ASC') {
+            this.order.type = 'DESC'
+          } else {
+            this.order.name = ''
+            this.order.type = ''
+          }
+        } else {
+          this.order.name = sort
+          this.order.type = 'ASC'
+        }
+      },
       async showSongs () {
         if (this.disabled) {
           return
@@ -246,7 +304,7 @@
     }
     .generator-main {
         display: flex;
-        justify-content: center;
+        justify-content: left;
         align-items: center;
     }
 </style>
