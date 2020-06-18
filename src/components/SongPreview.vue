@@ -6,8 +6,8 @@
             </a>
         </h2>
         <h3 class="subtitle is-4">{{ song.official }}</h3>
-        <figure :class="{restricted: song.restricted}">
-            <image-loader>
+        <figure class="figure">
+            <image-loader :class="{restricted: song.restricted}">
                 <img :alt="song.anime[0].name + ' label'"
                      :src="`https://img.animesongs.org/${song.anime[0].anidbId}.jpg`"
                      slot="image">
@@ -44,8 +44,12 @@
         margin-left: .5rem;
     }
 
+    .figure {
+        display: inline-block;
+        overflow: hidden;
+    }
+
     .restricted {
-        padding: 1rem;
-        filter: blur(1rem);
+        filter: blur(40px);
     }
 </style>
