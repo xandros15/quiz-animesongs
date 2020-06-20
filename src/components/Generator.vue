@@ -29,33 +29,15 @@
             <table class="table" v-if="songs.length > 0">
                 <thead>
                 <tr>
-                    <th>
+                    <TblTh>
                         <input :checked="hasAllSelected" @click="toggleAll" title="select all songs" type="checkbox">
-                    </th>
-                    <th>
-                        <a @click="orderBy('song')" href="#" title="">
-                            <span v-if="order.name === 'song'"><span v-if="order.type === 'ASC'">▲</span><span
-                                    v-else>▼</span></span>
-                            song
-                        </a>
-                    </th>
-                    <th>
-                        <a @click="orderBy('artist')" href="#" title="">
-                            <span v-if="order.name === 'artist'"><span v-if="order.type === 'ASC'">▲</span><span
-                                    v-else>▼</span></span>
-                            artists
-                        </a>
-                    </th>
-                    <th>
-                        <a @click="orderBy('anime')" href="#" title="">
-                            <span v-if="order.name === 'anime'"><span v-if="order.type === 'ASC'">▲</span><span
-                                    v-else>▼</span></span>
-                            anime
-                        </a>
-                    </th>
-                    <th>start</th>
-                    <th>middle</th>
-                    <th>end</th>
+                    </TblTh>
+                    <TblTh :order="order" @orderBy="orderBy" name="song">song</TblTh>
+                    <TblTh :order="order" @orderBy="orderBy" name="artist">artist</TblTh>
+                    <TblTh :order="order" @orderBy="orderBy" name="anime">anime</TblTh>
+                    <TblTh>start</TblTh>
+                    <TblTh>middle</TblTh>
+                    <TblTh>end</TblTh>
                 </tr>
                 </thead>
                 <tbody>
@@ -63,8 +45,7 @@
                          :key="song.id"
                          :sample="song.sample"
                          :song="song"
-                         @click="toggleSong(song.id)
-                     "
+                         @click="toggleSong(song.id)"
                          @play="playSample"
                          v-for="song in sortedSongs"/>
                 </tbody>
@@ -79,10 +60,12 @@
   import { existsMultiple } from '../api/songs'
   import GenSong from './GenSong'
   import Import from './Import'
+  import TblTh from './TblTh'
 
   export default {
     name: 'generator',
     components: {
+      TblTh,
       GenSong,
       Import,
     },
