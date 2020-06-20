@@ -86,7 +86,7 @@
     },
     data () {
       return {
-        order: {name: '', type: ''},
+        order: [],
         player: new Audio(),
         songs: [],
         search: '',
@@ -100,27 +100,20 @@
     },
     computed: {
       sortedSongs () {
-        const songs = [...this.songs]
-        const {type, name} = this.order
-        switch (name) {
-          case 'song':
-            songs.sort((a, b) => {
-              return type === 'ASC' ? ('' + a.name).localeCompare(b.name) :
-                ('' + b.name).localeCompare(a.name)
-            })
-            break
-          case 'artist':
-            songs.sort((a, b) => {
-              return type === 'ASC' ? ('' + a.artists[0].name).localeCompare(b.artists[0].name) :
-                ('' + b.artists[0].name).localeCompare(a.artists[0].name)
-            })
-            break
-          case 'anime':
-            songs.sort((a, b) => {
-              return type === 'ASC' ? ('' + a.anime[0].name).localeCompare(b.anime[0].name) :
-                ('' + b.anime[0].name).localeCompare(a.anime[0].name)
-            })
-            break
+        let songs = [...this.songs]
+        for (const order of this.order) {
+          const {type, name} = order
+          switch (name) {
+            case 'song':
+              songs.sort((a, b) => type === 'ASC' ? ('' + a.name).localeCompare(b.name) : ('' + b.name).localeCompare(a.name))
+              break
+            case 'artist':
+              songs.sort((a, b) => type === 'ASC' ? ('' + a.artists[0].name).localeCompare(b.artists[0].name) : ('' + b.artists[0].name).localeCompare(a.artists[0].name))
+              break
+            case 'anime':
+              songs.sort((a, b) => type === 'ASC' ? ('' + a.anime[0].name).localeCompare(b.anime[0].name) : ('' + b.anime[0].name).localeCompare(a.anime[0].name))
+              break
+          }
         }
         return songs
       },
@@ -147,17 +140,18 @@
     },
     methods: {
       orderBy (sort) {
-        const {name, type} = this.order
-        if (name === sort) {
-          if (type === 'ASC') {
-            this.order.type = 'DESC'
-          } else {
-            this.order.name = ''
-            this.order.type = ''
-          }
+        const orderIndex = this.order.findIndex(i => i.name === sort)
+        if (orderIndex === -1) {
+          this.order.push({name: sort, type: 'ASC'})
         } else {
-          this.order.name = sort
-          this.order.type = 'ASC'
+          const {name, type} = this.order[orderIndex]
+          this.order.splice(orderIndex, 1)
+          if (type === 'ASC') {
+            this.order.push({
+              name,
+              type: 'DESC'
+            })
+          }
         }
       },
       async showSongs () {

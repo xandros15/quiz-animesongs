@@ -1,8 +1,8 @@
 <template>
     <th>
         <a @click="$emit('orderBy', name)" href="#" title="" v-if="order">
-            <span v-if="order.name === name">
-                <span v-if="order.type === 'ASC'">▲</span>
+            <span v-if="current">
+                <span v-if="isAsc">▲</span>
                 <span v-else>▼</span>
             </span>
             <slot/>
@@ -18,8 +18,21 @@
     name: 'TblTh',
     props: {
       name: String,
-      order: Object,
+      order: Array,
     },
+    computed: {
+      current () {
+        for (const item of this.order) {
+          if (item.name === this.name) {
+            return item
+          }
+        }
+        return false
+      },
+      isAsc () {
+        return this.current && this.current.type === 'ASC'
+      }
+    }
   }
 </script>
 
