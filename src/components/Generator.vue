@@ -101,20 +101,30 @@
     computed: {
       sortedSongs () {
         let songs = [...this.songs]
-        for (const order of this.order) {
-          const {type, name} = order
-          switch (name) {
-            case 'song':
-              songs.sort((a, b) => type === 'ASC' ? ('' + a.name).localeCompare(b.name) : ('' + b.name).localeCompare(a.name))
-              break
-            case 'artist':
-              songs.sort((a, b) => type === 'ASC' ? ('' + a.artists[0].name).localeCompare(b.artists[0].name) : ('' + b.artists[0].name).localeCompare(a.artists[0].name))
-              break
-            case 'anime':
-              songs.sort((a, b) => type === 'ASC' ? ('' + a.anime[0].name).localeCompare(b.anime[0].name) : ('' + b.anime[0].name).localeCompare(a.anime[0].name))
-              break
+        const orders = [...this.order]
+        orders.reverse()
+        songs.sort((a, b) => {
+          for (const order of orders) {
+            const {type, name} = order
+            let compare = 0
+            switch (name) {
+              case 'song':
+                compare = ('' + a.name).localeCompare(b.name)
+                break
+              case 'artist':
+                compare = ('' + a.artists[0].name).localeCompare(b.artists[0].name)
+                break
+              case 'anime':
+                compare = ('' + a.anime[0].name).localeCompare(b.anime[0].name)
+                break
+            }
+            if (type === 'DESC') {
+              compare *= -1
+            }
+            if (compare > 0) return 1
+            if (compare < 0) return -1
           }
-        }
+        })
         return songs
       },
       hasAllSelected () {
