@@ -9,7 +9,7 @@
         <figure class="figure">
             <image-loader :class="{restricted: song.restricted}">
                 <img :alt="song.anime[0].name + ' label'"
-                     :src="`https://cdn.animesongs.org/images/${song.anime[0].anidbId}.jpg`"
+                     :src="`https://cdn.animesongs.org/images/anime/${song.anime[0].anidbId}.jpg`"
                      slot="image">
             </image-loader>
         </figure>
