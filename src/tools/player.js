@@ -13,11 +13,15 @@ export class Player {
   }
 
   clear () {
+    for (const howl of this.howls) {
+      howl.unload()
+    }
     this.howls = []
   }
 
   load (src, options = {}) {
     if (this.howls.length > 1) {
+      this.howls[0].unload()
       this.howls.shift()
     }
     if (src) {
@@ -31,12 +35,14 @@ export class Player {
 
   loadOneNote (src, callback, options = {}) {
     if (this.howls.length > 1) {
+      this.howls[0].unload()
       this.howls.shift()
     }
     if (src) {
       const howl = new Howl({
         ...options,
         ...baseOptions,
+        html5: false,
         src,
       })
 
